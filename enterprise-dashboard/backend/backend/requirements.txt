@@ -1,6 +1,7 @@
-Django
+
+django
 djangorestframework
-psycopg2-binary
 djangorestframework-simplejwt
-django-filter
+psycopg2-binary
+sendgrid
 python-dotenv
