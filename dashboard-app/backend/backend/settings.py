@@ -58,6 +58,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "backend.urls"
 
+
 CORS_ALLOW_ALL_ORIGINS = True
 
 REST_FRAMEWORK = {
@@ -65,6 +66,13 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://cuddly-tribble-5grx7w7vxrq9375r4-3000.app.github.dev"
+]
+
 
 TEMPLATES = [
     {

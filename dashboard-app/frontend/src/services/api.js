@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://127.0.0.1:8000/api",
+  baseURL: "https://cuddly-tribble-5grx7w7vxrq9375r4-8000.app.github.dev/api",
 });
 
 // Attach JWT automatically
@@ -15,7 +15,7 @@ API.interceptors.request.use((config) => {
 
 // AUTH
 export const loginUser = (username, password) =>
-  API.post("/auth/token/", { username, password });
+  API.post("/auth/login/", { username, password });
 
 export const registerUser = (data) =>
   API.post("/auth/register/", data);
