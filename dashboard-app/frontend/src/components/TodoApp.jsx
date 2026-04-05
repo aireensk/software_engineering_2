@@ -1,24 +1,47 @@
-import { useState } from "react";
-import { useTodos } from "../hooks/useTodos";
+import { useEffect, useState } from "react";
+import { getTodos, createTodo, deleteTodo } from "../services/api";
 
-export default function TodoApp() {
-  const { tasks, addTask, toggleTask, removeTask } = useTodos();
-  const [name, setName] = useState("");
+export default function Todos() {
+  const [todos, setTodos] = useState([]);
+  const [newTodo, setNewTodo] = useState("");
+
+  useEffect(() => {
+    fetchTodos();
+  }, []);
+
+  const fetchTodos = async () => {
+    const data = await getTodos();
+    setTodos(data);
+  };
+
+  const handleAdd = async () => {
+    await createTodo(newTodo);
+    setNewTodo("");
+    fetchTodos();
+  };
+
+  const handleDelete = async (id) => {
+    await deleteTodo(id);
+    fetchTodos();
+  };
 
   return (
     <div>
       <h2>Todos</h2>
 
-      <input onChange={(e) => setName(e.target.value)} />
-      <button onClick={() => addTask(name)}>Add</button>
+      <input
+        value={newTodo}
+        onChange={(e) => setNewTodo(e.target.value)}
+        placeholder="New task"
+      />
+
+      <button onClick={handleAdd}>Add</button>
 
       <ul>
-        {tasks.map(t => (
-          <li key={t.id}>
-            <span onClick={() => toggleTask(t.id)}>
-              {t.completed ? "✔" : "❌"} {t.name}
-            </span>
-            <button onClick={() => removeTask(t.id)}>Delete</button>
+        {todos.map((todo) => (
+          <li key={todo.id}>
+            {todo.name}
+            <button onClick={() => handleDelete(todo.id)}>Delete</button>
           </li>
         ))}
       </ul>

@@ -5,12 +5,12 @@ export default function Profile() {
   const [profile, setProfile] = useState(null);
 
   useEffect(() => {
-    load();
+    loadProfile();
   }, []);
 
-  const load = async () => {
-    const res = await getProfile();
-    setProfile(res.data);
+  const loadProfile = async () => {
+    const data = await getProfile();
+    setProfile(data);
   };
 
   return (

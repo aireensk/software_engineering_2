@@ -1,25 +1,42 @@
 import { useState } from "react";
-import { loginUser } from "../../services/api";
-import { useAuth } from "../../AuthContext";
 import { useNavigate } from "react-router-dom";
+import { login } from "../../services/api";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    const res = await loginUser(username, password);
-    login(res.data.access);
-    navigate("/todos");
+    try {
+      const data = await login(username, password);
+
+      console.log("Login success:", data);
+
+      navigate("/todos");
+    } catch (error) {
+      console.error("Login failed:", error);
+      alert("Login failed. Check username/password.");
+    }
   };
 
   return (
     <div>
       <h2>Login</h2>
-      <input onChange={(e) => setUsername(e.target.value)} />
-      <input type="password" onChange={(e) => setPassword(e.target.value)} />
+
+      <input
+        placeholder="Username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
+
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+
       <button onClick={handleLogin}>Login</button>
     </div>
   );

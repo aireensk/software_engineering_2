@@ -1,40 +1,82 @@
 import axios from "axios";
 
-const API = axios.create({
-  baseURL: "https://cuddly-tribble-5grx7w7vxrq9375r4-8000.app.github.dev/api",
+const API_URL = import.meta.env?.VITE_DJANGO_API_URL || "http://127.0.0.1:8000/api";
+
+const api = axios.create({
+  baseURL: API_URL,
 });
 
-// Attach JWT automatically
-API.interceptors.request.use((config) => {
-  const token = localStorage.getItem("access_token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${JSON.parse(token)}`;
+// Attach token
+api.interceptors.request.use((config) => {
+  const publicEndpoints = ["/auth/register/", "/auth/token/"];
+
+  const isPublic = publicEndpoints.some((endpoint) =>
+    config.url.includes(endpoint)
+  );
+
+  if (!isPublic) {
+    const token = localStorage.getItem("access_token");
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${JSON.parse(token)}`;
+    }
   }
+
   return config;
 });
 
+
 // AUTH
-export const loginUser = (username, password) =>
-  API.post("/auth/login/", { username, password });
 
-export const registerUser = (data) =>
-  API.post("/auth/register/", data);
+export const login = async (username, password) => {
+  const response = await api.post("/auth/token/", {
+    username,
+    password,
+  });
 
-export const getProfile = () =>
-  API.get("/auth/profile/");
+  localStorage.setItem("access_token", JSON.stringify(response.data.access));
 
-export const updateProfile = (data) =>
-  API.patch("/auth/profile/", data);
+  return response.data;
+};
+
+export const register = async (username, email, password) => {
+  const response = await api.post("/auth/register/", {
+    username,
+    email,
+    password,
+  });
+
+  return response.data;
+};
+
 
 // TODOS
-export const getTodos = () =>
-  API.get("/todos/");
 
-export const createTodo = (name) =>
-  API.post("/todos/", { name });
+export const getTodos = async () => {
+  const response = await api.get("/todos/");
+  return response.data;
+};
 
-export const updateTodo = (id, data) =>
-  API.patch(`/todos/${id}/`, data);
+export const createTodo = async (name) => {
+  const response = await api.post("/todos/", { name });
+  return response.data;
+};
 
-export const deleteTodo = (id) =>
-  API.delete(`/todos/${id}/`);
+export const deleteTodo = async (id) => {
+  await api.delete(`/todos/${id}/`);
+};
+
+
+// PROFILE
+
+export const getProfile = async () => {
+  const response = await api.get("/auth/profile/");
+  return response.data;
+};
+
+export const updateProfile = async (data) => {
+  const response = await api.patch("/auth/profile/", data);
+  return response.data;
+};
+
+export default api;

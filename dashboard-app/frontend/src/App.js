@@ -1,21 +1,19 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./AuthContext";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./components/Authentication/Login";
+import Todos from "./components/TodoApp";
 import Register from "./components/Authentication/Register";
-import TodoApp from "./components/TodoApp";
 import Profile from "./components/Profile";
-
-export default function App() {
+function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/todos" element={<TodoApp />} />
-          <Route path="/profile" element={<Profile />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/todos" element={<Todos />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<Profile />} />
+      </Routes>
+    </Router>
   );
 }
+
+export default App;
